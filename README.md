@@ -50,6 +50,7 @@ Bar plot of enriched pathways
 ## 🚀 How to Run
 
 1️⃣ Update file paths to your local data files (e.g., RNAseq.csv, h.all.v7.1.symbols.gmt).
+
 2️⃣ Run the R script in your preferred R environment (RStudio recommended).
 
 ## ⚠️ Notes
