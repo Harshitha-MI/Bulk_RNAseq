@@ -142,7 +142,7 @@ pheatmap(top_gene_counts_sfm,
 
 # Extract top 50 differentially expressed genes in CM and CM-T samples
 top_genes_cm <- rownames(res_cm)[order(res_cm$padj)][1:50]
-write.csv(top_genes_cm, "results/tables/top50_DE_genes_CM-T_vs_CM..csv", row.names = TRUE)
+write.csv(top_genes_cm, "results/tables/top50_DE_genes_CM-T_vs_CM.csv", row.names = TRUE)
 
 # Normalize counts for visualization
 rlog_counts_cm <- rlog(dds, blind = FALSE)
