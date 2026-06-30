@@ -202,20 +202,6 @@ adjusted p-value < 0.05
 
 ---
 
-## Output Files
-
-### Differential Expression Results
-
-| File              | Description                                              |
-| ----------------- | -------------------------------------------------------- |
-| `results_sfm.csv` | DESeq2 results for `SFM-T vs SFM`                        |
-| `results_cm.csv`  | DESeq2 results for `CM-T vs CM`                          |
-| `top_50_sfm.csv`  | Top 50 differentially expressed genes for `SFM-T vs SFM` |
-| `top_50_cm.csv`   | Top 50 differentially expressed genes for `CM-T vs CM`   |
-
-
----
-
 ## Reproducibility Notes
 
 * The count matrix should contain raw gene-level counts.
