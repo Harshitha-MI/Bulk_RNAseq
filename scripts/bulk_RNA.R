@@ -50,7 +50,7 @@ library(EnhancedVolcano)
 #Load Data: Count matrix
 
 #read in the csv file
-countdata <- read.csv("./RNAseq.csv", row.names = 1, header = TRUE)
+countdata <- read.csv("inputs/RNAseq.csv", row.names = 1, header = TRUE)
 
 # Convert count data to a matrix
 countdata <- as.matrix(round(countdata))
@@ -59,7 +59,7 @@ colnames(countdata)
 #Define experimental conditions
 condition <- factor(c(rep("SFM", 5), rep("SFM-T", 5), rep("CM", 5), rep("CM-T", 5)))
 
-metadata <- read.csv("./metadata.csv", row.names = 1)
+metadata <- read.csv("inputs/metadata.csv", row.names = 1)
 metadata$condition <- factor(metadata$condition)
 
 countdata <- countdata[, rownames(metadata)]
@@ -95,7 +95,7 @@ res_cleaned_cm <- res_cm[!is.na(res_cm$log2FoldChange) & !is.na(res_cm$padj), ]
 
 # Now apply the filtering conditions to sfm and sfm-t
 res_filtered_sfm <- res_cleaned_sfm[abs(res_cleaned_sfm$log2FoldChange) >= 1 & res_cleaned_sfm$padj < 0.05, ]
-write.csv(res_filtered_sfm, "results_sfm.csv", row.names = TRUE)
+write.csv(res_filtered_sfm, "results/tables/deseq2_results_SFM-T_vs_SFM.csv", row.names = TRUE)
 
 upregulated_genes_sfm <- res_filtered_sfm[res_filtered_sfm$log2FoldChange > 0,]
 downregulated_genes_sfm <- res_filtered_sfm[res_filtered_sfm$log2FoldChange < 0,]
@@ -105,7 +105,7 @@ cat("Downregulated genes SFM: ", nrow(downregulated_genes_sfm))
 
 # Now apply the filtering conditions to cm and cm-t
 res_filtered_cm <- res_cleaned_cm[abs(res_cleaned_cm$log2FoldChange) >= 1 & res_cleaned_cm$padj < 0.05, ]
-write.csv(res_filtered_cm, "results_cm.csv", row.names = TRUE)
+write.csv(res_filtered_cm, "results/tables/deseq2_results_CM-T_vs_CM.csv", row.names = TRUE)
 
 upregulated_genes_cm <- res_filtered_cm[res_filtered_cm$log2FoldChange > 0,]
 downregulated_genes_cm <- res_filtered_cm[res_filtered_cm$log2FoldChange < 0,]
@@ -117,7 +117,7 @@ cat("Downregulated genes CM: ", nrow(downregulated_genes_cm))
 
 # Extract top 50 differentially expressed genes in SFM and SFM-T samples
 top_genes_sfm <- rownames(res_sfm)[order(res_sfm$padj)][1:50]
-write.csv(top_genes_sfm, "top_50_sfm.csv", row.names = TRUE)
+write.csv(top_genes_sfm, "results/tables/top50_DE_genes_SFM-T_vs_SFM.csv", row.names = TRUE)
 
 # Normalize counts for visualization
 rlog_counts_sfm <- rlog(dds, blind = FALSE)
@@ -128,6 +128,7 @@ sfm_samples <- rownames(metadata)[metadata$condition %in% c("SFM", "SFM-T")]
 # Extract normalized counts for top genes
 top_gene_counts_sfm <- assay(rlog_counts_sfm)[top_genes_sfm, sfm_samples ]
 
+dir.create("results/figures", recursive = TRUE, showWarnings = FALSE)
 # Generate heatmap
 pheatmap(top_gene_counts_sfm,
          scale = "row",
@@ -137,11 +138,11 @@ pheatmap(top_gene_counts_sfm,
          show_rownames = TRUE, fontsize = 6,
          color = colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
          main = "Heatmap of Top 50 Differentially Expressed Genes in SFM and SFM-T",
-         filename = "top50_DE_genes_SFM_vs_SFMT_heatmap.png")
+         filename = "results/figures/heatmap_top50_SFM-T_vs_SFM.png")
 
 # Extract top 50 differentially expressed genes in CM and CM-T samples
 top_genes_cm <- rownames(res_cm)[order(res_cm$padj)][1:50]
-write.csv(top_genes_cm, "top_50_cm.csv", row.names = TRUE)
+write.csv(top_genes_cm, "results/tables/top50_DE_genes_CM-T_vs_CM..csv", row.names = TRUE)
 
 # Normalize counts for visualization
 rlog_counts_cm <- rlog(dds, blind = FALSE)
@@ -161,7 +162,7 @@ pheatmap(top_gene_counts_cm,
          show_rownames = TRUE, fontsize = 6,
          color = colorRampPalette(rev(brewer.pal(9, "RdBu")))(100),
          main = "Heatmap of Top 50 Differentially Expressed Genes in CM and CM-T",
-         filename = "top50_DE_genes_CM_vs_CMT_heatmap.png")
+         filename = "results/figures/heatmap_top50_CM-T_vs_CM.png")
 
 # Volcano Plot
 volcano_sfm <- EnhancedVolcano(
@@ -179,7 +180,7 @@ volcano_sfm <- EnhancedVolcano(
 )
 
 ggsave(
-  filename = "SFM_vs_SFMT_volcano_plot.png",
+  filename = "results/figures/volcano_SFM-T_vs_SFM.png",
   plot = volcano_sfm,
   width = 8,
   height = 6,
@@ -200,7 +201,7 @@ volcano_cm <- EnhancedVolcano(res_cm,
 )
 
 ggsave(
-  filename = "CM_vs_CMT_volcano_plot.png",
+  filename = "results/figures/volcano_CM-T_vs_CM.png",
   plot = volcano_cm,
   width = 8,
   height = 6,
@@ -228,7 +229,7 @@ pca_plot <- ggplot(pca_df, aes(x = PC1, y = PC2, color = condition)) +
   scale_color_brewer(palette = "Set1")
 
 ggsave(
-  filename = "./PCA_plot.png",
+  filename = "results/figures/PCA_all_samples.png",
   plot = pca_plot,
   width = 7,
   height = 5,
@@ -249,7 +250,7 @@ pheatmap(
   clustering_distance_rows = sampleDists,
   clustering_distance_cols = sampleDists,
   col = colors,
-  filename = "./sample_distance_heatmap.png",
+  filename = "results/figures/sample_distance_heatmap.png",
   width = 8,
   height = 6
 )
@@ -266,7 +267,7 @@ res2 <- res_sfm %>%
 ranks <- tibble::deframe(res2)
 
 # Load Hallmark gene sets
-pathways.hallmark <- gmtPathways("./h.all.v7.1.symbols.gmt")
+pathways.hallmark <- gmtPathways("inputs/h.all.v7.1.symbols.gmt")
 
 # Run GSEA
 fgseaRes <- fgsea(pathways = pathways.hallmark, stats = ranks)
@@ -298,7 +299,7 @@ fgsea_plot1 <- ggplot(fgseaResTidy1, aes(reorder(pathway, NES), NES)) +
   theme_bw(base_size = 12)
 
 ggsave(
-  filename = "./fgsea_pathway_enrichment_SFM_vs_SFMT.png",
+  filename = "results/figures/gsea_hallmark_SFM-T_vs_SFM.png",
   plot = fgsea_plot1,
   width = 9,
   height = 7,
