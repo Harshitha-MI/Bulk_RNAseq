@@ -63,7 +63,7 @@ This analysis focuses on two differential expression contrasts:
 ├── README.md
 ├── scripts/
 │   └── bulk_RNA.R
-├── data/
+├── inputs/
 │   ├── RNAseq.csv
 │   ├── metadata.csv
 │   └── h.all.v7.1.symbols.gmt
