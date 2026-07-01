@@ -69,18 +69,19 @@ This analysis focuses on two differential expression contrasts:
 │   └── h.all.v7.1.symbols.gmt
 ├── results/
 │   ├── tables/
-│   │   ├── results_sfm.csv
-│   │   ├── results_cm.csv
-│   │   ├── top_50_sfm.csv
-│   │   └── top_50_cm.csv
+│   │   ├── deseq2_results_SFM-T_vs_SFM.csv
+│   │   ├── deseq2_results_CM-T_vs_CM.csv
+│   │   ├── top50_DE_genes_SFM-T_vs_SFM.csv
+│   │   └── top50_DE_genes_CM-T_vs_CM.csv
 │   └── figures/
-│       ├── SFM_vs_SFMT_volcano_plot.png
-│       ├── CM_vs_CMT_volcano_plot.png
-│       ├── top50_DE_genes_SFM_vs_SFMT_heatmap.png
-│       ├── top50_DE_genes_CM_vs_CMT_heatmap.png
-│       ├── PCA_plot.png
+│       ├── volcano_SFM-T_vs_SFM.png
+│       ├── volcano_CM-T_vs_CM.png
+│       ├── heatmap_top50_SFM-T_vs_SFM.png
+│       ├── heatmap_top50_CM-T_vs_CM.png
+│       ├── pca_all_samples.png
 │       ├── sample_distance_heatmap.png
-│       └── fgsea_pathway_enrichment_SFM_vs_SFMT.png
+│       |── gsea_hallmark_SFM-T_vs_SFM.png
+|       └── gsea_hallmark_CM-T_vs_CM.png
 └── README.md
 ```
 
@@ -219,7 +220,6 @@ This project demonstrates:
 
 * Bulk RNA-seq analysis
 * Differential expression analysis using DESeq2
-* RNA-seq quality-control visualization
 * PCA and sample distance analysis
 * Heatmap generation
 * Volcano plot generation
