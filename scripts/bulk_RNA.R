@@ -1,42 +1,5 @@
 ##Bulk RNAseq analysis###
 
-# Install required packages if missing
-
-# CRAN packages
-cran_packages <- c(
-  "pheatmap",
-  "ggplot2",
-  "tibble",
-  "dplyr",
-  "RColorBrewer"
-)
-
-# Bioconductor packages
-bioc_packages <- c(
-  "DESeq2",
-  "fgsea",
-  "EnhancedVolcano"
-)
-
-# Install BiocManager if missing
-if (!requireNamespace("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager")
-}
-
-# Install missing CRAN packages
-missing_cran <- cran_packages[!cran_packages %in% rownames(installed.packages())]
-
-if (length(missing_cran) > 0) {
-  install.packages(missing_cran)
-}
-
-# Install missing Bioconductor packages
-missing_bioc <- bioc_packages[!bioc_packages %in% rownames(installed.packages())]
-
-if (length(missing_bioc) > 0) {
-  BiocManager::install(missing_bioc, ask = FALSE, update = FALSE)
-}
-
 #Load required libraries
 library(DESeq2)
 library(fgsea)
@@ -93,6 +56,7 @@ res_cm <- results(dds, contrast = c("condition", "CM-T", "CM"))  #CM-T compared 
 res_cleaned_sfm <- res_sfm[!is.na(res_sfm$log2FoldChange) & !is.na(res_sfm$padj), ]
 res_cleaned_cm <- res_cm[!is.na(res_cm$log2FoldChange) & !is.na(res_cm$padj), ]
 
+dir.create("../results/tables", recursive = TRUE, showWarnings = FALSE)
 # Now apply the filtering conditions to sfm and sfm-t
 res_filtered_sfm <- res_cleaned_sfm[abs(res_cleaned_sfm$log2FoldChange) >= 1 & res_cleaned_sfm$padj < 0.05, ]
 write.csv(res_filtered_sfm, "../results/tables/deseq2_results_SFM-T_vs_SFM.csv", row.names = TRUE)
