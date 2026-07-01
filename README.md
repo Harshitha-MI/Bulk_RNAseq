@@ -4,8 +4,8 @@ This repository contains an R-based bulk RNA-seq analysis workflow for evaluatin
 
 The analysis is based on data associated with the following paper:
 
-**TRAIL induces cytokine production via the NFkB2 pathway promoting neutrophil chemotaxis and neutrophil-mediated immune-suppression in triple negative breast cancer cells**
-*Cancer Letters*, Volume 620, 2025, 217692
+**TRAIL induces cytokine production via the NFkB2 pathway promoting neutrophil chemotaxis and neutrophil-mediated immune-suppression in triple negative breast cancer cells**  
+*Cancer Letters*, Volume 620, 2025, 217692  
 DOI: https://doi.org/10.1016/j.canlet.2025.217692
 
 This project focuses specifically on the bulk RNA-seq differential expression and pathway enrichment portion of the study. It is not a full reproduction of all experiments in the paper.
@@ -34,12 +34,12 @@ The workflow includes:
 
 The dataset contains 20 samples across four experimental conditions, with five samples per condition.
 
-| Condition | Description                                      |
-| --------- | ------------------------------------------------ |
-| `SFM`     | Serum-free media                                 |
-| `SFM-T`   | Serum-free media with TRAIL treatment            |
-| `CM`      | Tumor-conditioned media                          |
-| `CM-T`    | Conditioned media from TRAIL-treated tumor cells |
+| Condition | Description |
+| --------- | ----------- |
+| `SFM` | Serum-free media |
+| `SFM-T` | Serum-free media with TRAIL treatment |
+| `CM` | Tumor-conditioned media |
+| `CM-T` | Conditioned media from TRAIL-treated tumor cells |
 
 Note: In the paper, the `CM-T` condition may also be referred to as `T-CM`. This repository keeps the condition naming used in the local metadata and analysis script.
 
@@ -49,10 +49,10 @@ Note: In the paper, the `CM-T` condition may also be referred to as `T-CM`. This
 
 This analysis focuses on two differential expression contrasts:
 
-| Contrast       | Biological Question                                                                                                                                            |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SFM-T vs SFM` | What transcriptional changes occur in neutrophils exposed to TRAIL in serum-free media?                                                                        |
-| `CM-T vs CM`   | What transcriptional changes occur in neutrophils exposed to conditioned media from TRAIL-treated tumor cells compared with untreated tumor-conditioned media? |
+| Contrast | Biological Question |
+| -------- | ------------------- |
+| `SFM-T vs SFM` | What transcriptional changes occur in neutrophils exposed to TRAIL in serum-free media? |
+| `CM-T vs CM` | What transcriptional changes occur in neutrophils exposed to conditioned media from TRAIL-treated tumor cells compared with untreated tumor-conditioned media? |
 
 ---
 
@@ -61,29 +61,60 @@ This analysis focuses on two differential expression contrasts:
 ```text
 .
 ├── README.md
+├── environment.yml
 ├── scripts/
 │   └── bulk_RNA.R
 ├── inputs/
 │   ├── RNAseq.csv
 │   ├── metadata.csv
 │   └── h.all.v7.1.symbols.gmt
-├── results/
-│   ├── tables/
-│   │   ├── deseq2_results_SFM-T_vs_SFM.csv
-│   │   ├── deseq2_results_CM-T_vs_CM.csv
-│   │   ├── top50_DE_genes_SFM-T_vs_SFM.csv
-│   │   └── top50_DE_genes_CM-T_vs_CM.csv
-│   └── figures/
-│       ├── volcano_SFM-T_vs_SFM.png
-│       ├── volcano_CM-T_vs_CM.png
-│       ├── heatmap_top50_SFM-T_vs_SFM.png
-│       ├── heatmap_top50_CM-T_vs_CM.png
-│       ├── pca_all_samples.png
-│       ├── sample_distance_heatmap.png
-│       |── gsea_hallmark_SFM-T_vs_SFM.png
-|       └── gsea_hallmark_CM-T_vs_CM.png
-└── README.md
+└── results/
+    ├── tables/
+    │   ├── deseq2_results_SFM-T_vs_SFM.csv
+    │   ├── deseq2_results_CM-T_vs_CM.csv
+    │   ├── top50_DE_genes_SFM-T_vs_SFM.csv
+    │   └── top50_DE_genes_CM-T_vs_CM.csv
+    └── figures/
+        ├── volcano_SFM-T_vs_SFM.png
+        ├── volcano_CM-T_vs_CM.png
+        ├── heatmap_top50_SFM-T_vs_SFM.png
+        ├── heatmap_top50_CM-T_vs_CM.png
+        ├── pca_all_samples.png
+        ├── sample_distance_heatmap.png
+        ├── gsea_hallmark_SFM-T_vs_SFM.png
+        └── gsea_hallmark_CM-T_vs_CM.png
 ```
+
+---
+
+## How to Run the Analysis
+
+This repository includes an `environment.yml` file to create a reproducible conda environment with the R and Bioconductor packages required for the analysis.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Harshitha-MI/Bulk_RNAseq.git
+cd Bulk_RNAseq
+```
+
+### 2. Create and activate the conda environment
+
+```bash
+conda env create -f environment.yml
+conda activate bulk-rnaseq
+```
+
+### 3. Run the analysis script
+
+```bash
+cd scripts
+Rscript bulk_RNA.R
+```
+
+The script reads the input count matrix and sample metadata from the `inputs/` directory and writes the generated differential expression tables, pathway enrichment results, and visualizations to the `results/` directory.
+
+The `results/` directory is included in this repository so that users can view the generated output files without rerunning the full workflow. Running the script again will regenerate the output files.
 
 ---
 
@@ -104,7 +135,6 @@ The script converts the count data to a rounded count matrix before creating the
 ### `metadata.csv`
 
 Sample metadata file describing the experimental condition for each sample.
-
 
 ### `h.all.v7.1.symbols.gmt`
 
@@ -143,7 +173,7 @@ design = ~ condition
 
 Two contrasts are tested:
 
-```r
+```text
 SFM-T vs SFM
 CM-T vs CM
 ```
@@ -210,7 +240,8 @@ adjusted p-value < 0.05
 * The analysis uses DESeq2 normalization and statistical testing.
 * Low-expression genes are filtered before running DESeq2.
 * The volcano plots, heatmaps, PCA plot, distance heatmap, and GSEA plot are generated from the processed DESeq2 results.
-* Results may vary slightly depending on package versions.
+* The `environment.yml` file provides the conda environment needed to run the workflow.
+* Results may vary slightly depending on package versions and computing environment.
 
 ---
 
@@ -233,7 +264,7 @@ This project demonstrates:
 
 If using this dataset, please cite the original publication:
 
-Huang et al. **TRAIL induces cytokine production via the NFkB2 pathway promoting neutrophil chemotaxis and neutrophil-mediated immune-suppression in triple negative breast cancer cells.** *Cancer Letters*. 2025;620:217692.
+Huang et al. **TRAIL induces cytokine production via the NFkB2 pathway promoting neutrophil chemotaxis and neutrophil-mediated immune-suppression in triple negative breast cancer cells.** *Cancer Letters*. 2025;620:217692.  
 DOI: https://doi.org/10.1016/j.canlet.2025.217692
 
 ---
